@@ -256,7 +256,9 @@ python 回测/高开均线回测.py
 - [验证工作流](./文档/策略验证流程.md)
 - [短线因子说明](./文档/短线因子说明.md)
 
-## 技术栈
+## 项目使用的工具
+
+项目在数据处理、回测和结果检查中使用以下工具：
 
 Python | Pandas | NumPy | Matplotlib | SQLite | OpenPyXL | Unittest
 
