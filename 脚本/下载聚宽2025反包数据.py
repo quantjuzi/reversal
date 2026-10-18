@@ -21,7 +21,22 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import pandas as pd
-from jqdata import get_all_securities, get_price
+
+try:
+    from jqdata import get_all_securities, get_price
+except ImportError:
+    try:
+        from jqdatasdk import get_all_securities, get_price
+    except ImportError:
+        # 聚宽网页研究环境可能直接注入到当前单元格的全局命名空间。
+        get_all_securities = globals().get("get_all_securities")
+        get_price = globals().get("get_price")
+
+if get_all_securities is None or get_price is None:
+    raise ImportError(
+        "当前环境没有 get_all_securities/get_price。"
+        "请在聚宽研究环境运行，或先配置并登录 jqdatasdk。"
+    )
 
 
 START = "2025-01-01"
