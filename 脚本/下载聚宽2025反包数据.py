@@ -15,11 +15,10 @@
     有足够历史数据；标准化文件的最终日期只保留 2025-01-01 至 2025-09-30。
 """
 
-from __future__ import annotations
-
 import os
 import time
 from pathlib import Path
+from typing import List, Optional, Tuple
 
 import pandas as pd
 from jqdata import get_all_securities, get_price
@@ -62,7 +61,7 @@ def is_a_share(code: str) -> bool:
     return False
 
 
-def get_a_share_codes() -> list[str]:
+def get_a_share_codes() -> List[str]:
     """获取研究区间内可能存在的沪深北 A 股代码。"""
 
     securities = get_all_securities(types=["stock"]).copy()
@@ -79,7 +78,7 @@ def get_a_share_codes() -> list[str]:
     return sorted(code for code in active.index if is_a_share(code))
 
 
-def fetch_chunk(codes: list[str]) -> pd.DataFrame:
+def fetch_chunk(codes: List[str]) -> pd.DataFrame:
     """下载一批股票，返回聚宽原始字段。"""
 
     data = get_price(
@@ -159,14 +158,14 @@ def fetch_chunk(codes: list[str]) -> pd.DataFrame:
     ]
 
 
-def download_all(codes: list[str]) -> tuple[pd.DataFrame, list[str]]:
+def download_all(codes: List[str]) -> Tuple[pd.DataFrame, List[str]]:
     """分块下载，失败块重试三次并记录未能下载的代码。"""
 
-    chunks: list[pd.DataFrame] = []
-    failed_codes: list[str] = []
+    chunks: List[pd.DataFrame] = []
+    failed_codes: List[str] = []
     for offset in range(0, len(codes), CHUNK_SIZE):
         chunk = codes[offset : offset + CHUNK_SIZE]
-        last_error: Exception | None = None
+        last_error: Optional[Exception] = None
         for attempt in range(3):
             try:
                 part = fetch_chunk(chunk)
